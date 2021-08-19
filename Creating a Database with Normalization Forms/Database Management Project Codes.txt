@@ -1,0 +1,248 @@
+ALTER TABLE Animal_CareTaker DROP CONSTRAINT pk_anc;
+ALTER TABLE Animal_CareTaker DROP CONSTRAINT fk_anc_an;
+ALTER TABLE Animal_CareTaker DROP CONSTRAINT fk_anc_ct;
+ALTER TABLE Animal_PetFood DROP CONSTRAINT pk_anp;
+ALTER TABLE Animal_PetFood DROP CONSTRAINT fk_anp_an;
+ALTER TABLE Animal_PetFood DROP CONSTRAINT fk_anp_p;
+ALTER TABLE Animal_Cage DROP CONSTRAINT pk_ancage;
+ALTER TABLE Animal_Cage DROP CONSTRAINT fk_ancage_an;
+ALTER TABLE Animal_Cage DROP CONSTRAINT fk_ancage_cage;
+ALTER TABLE MedicalRecord DROP CONSTRAINT med_pk;
+ALTER TABLE MedicalRecord DROP CONSTRAINT an_fk;
+ALTER TABLE MedicalRecord DROP CONSTRAINT v_fk;
+
+DROP TABLE CareTaker;
+DROP TABLE Veterinarian;
+DROP TABLE Animal;
+DROP TABLE MedicalRecord;
+DROP TABLE Cage;
+DROP TABLE PetFood;
+DROP TABLE Animal_CareTaker;
+DROP TABLE Animal_Cage;
+DROP TABLE Animal_PetFood;
+
+create table CareTaker(
+c_id number(3) primary key NOT NULL,
+c_fname varchar2(50) NOT NULL,
+c_lname varchar2(50) NOT NULL,
+c_address varchar2(200) NOT NULL,
+c_email varchar2(50),
+c_age number(2)
+);
+
+create table Veterinarian(
+v_id number(3) primary key NOT NULL,
+v_fname varchar2(50) NOT NULL,
+v_lname varchar2(50) NOT NULL,
+v_age number(2) NOT NULL
+);
+
+
+create table Animal(
+an_id number(3) primary key NOT NULL,
+an_name varchar2(50) NOT NULL,
+an_sex varchar2(10) NOT NULL,
+species varchar2(20),
+an_age number(2) NOT NULL
+);
+
+
+create table MedicalRecord(
+an_id number(3) NOT NULL,
+v_id number(3) NOT NULL,
+op_date date NOT NULL,
+op_cost number(4) NOT NULL,
+op_code varchar2(50) NOT NULL,
+constraint med_pk primary key(an_id,v_id),
+constraint an_fk foreign key(an_id) references Animal(an_id),
+constraint v_fk foreign key(v_id) references Veterinarian(v_id)
+);
+
+create table Cage(
+cage_id number(3) primary key NOT NULL,
+cage_size varchar2(6) NOT NULL
+);
+
+
+create table PetFood(
+m_id number(3) primary key NOT NULL,
+brand_name varchar2(50) NOT NULL,
+expiration_date date NOT NULL,
+age_range varchar2(6) NOT NULL
+);
+
+create table Animal_CareTaker(
+an_id number(3),
+c_id number(3),
+--constraint pk_anc primary key(an_id,c_id),
+constraint fk_anc_an foreign key(an_id) references Animal(an_id),
+constraint fk_anc_ct foreign key(c_id) references CareTaker(c_id)
+);
+
+create table Animal_Cage(
+an_id number(3),
+cage_id number(3),
+--constraint pk_ancage primary key(an_id,cage_id),
+constraint fk_ancage_an foreign key(an_id) references Animal(an_id),
+constraint fk_ancage_cage foreign key(cage_id) references Cage(cage_id)
+);
+
+create table Animal_PetFood(
+an_id number(3),
+m_id number(3),
+--constraint pk_anp primary key(an_id,m_id),
+constraint fk_anp_an foreign key(an_id) references Animal(an_id),
+constraint fk_anp_p foreign key(m_id) references PetFood(m_id)
+);
+
+
+INSERT INTO CareTaker VALUES (111, 'John', 'Wheeler','219  Black Stallion Road' ,'jwheeler@gmail.com',26);
+INSERT INTO CareTaker VALUES (223, 'Belinda','Harris','4471  Birch  Street' ,'bharris@gmail.com',34);
+INSERT INTO CareTaker VALUES (435, 'Ellen', 'Reliford','4454  West Fork Street' ,'ereliford@gmail.com',32);
+INSERT INTO CareTaker VALUES (342, 'John', 'Comstock','4916  Johnstown Road','jcomstock@hotmail.com',45);
+INSERT INTO CareTaker VALUES (567, 'Julie', 'Richey','2127  Nuzum Court' ,'jrichey@outlook.com',38);
+INSERT INTO CareTaker VALUES (612, 'Stanley','Shuler','1088  Heavens Way' ,'stshuler@gmail.com',49);
+INSERT INTO CareTaker VALUES (765, 'Karly', 'O Carrier','4976  Goldie Lane Cincinnati' ,'kcarrier@gmail.com',28);
+INSERT INTO CareTaker VALUES (803, 'Allyson', 'Evans','1952  Oakway Lane' ,'aevans@gmail.com',33);
+INSERT INTO CareTaker VALUES (178, 'Manuel', 'Overall','2970  Tail Ends Road Waukesha' ,'moverall@gmail.com',43);
+INSERT INTO CareTaker VALUES (954, 'Daniel', 'Smith','1358  Park Street San Francisco' ,'dsmith@gmail.com',37);
+
+
+INSERT INTO Veterinarian VALUES (789,'John', 'Wheeler',26);
+INSERT INTO Veterinarian VALUES (654,'Belinda','Harris',34);
+INSERT INTO Veterinarian VALUES (123,'Ellen', 'Reliford',32);
+INSERT INTO Veterinarian VALUES (222,'John', 'Comstock',45);
+INSERT INTO Veterinarian VALUES (777,'Julie', 'Richey',38);
+INSERT INTO Veterinarian VALUES (666, 'Juan', 'Perez', 42);
+INSERT INTO Veterinarian VALUES (555, 'Semih', 'Özsoy', 22);
+
+
+INSERT INTO Animal VALUES (555,'Charlie','Male','Cat',2);
+INSERT INTO Animal VALUES (222,'Ollie','Female','Cat',1);
+INSERT INTO Animal VALUES (999,'Max','Male','Dog',3);
+INSERT INTO Animal VALUES (333,'Milo', 'Female','Cat',1);
+INSERT INTO Animal VALUES (666,'Jack', 'Male','Dog',1);
+INSERT INTO Animal VALUES (888,'Oscar', 'Male','Dog',5);
+INSERT INTO Animal VALUES (777,'Max', 'Male','Dog',4);
+INSERT INTO Animal VALUES (111,'Milo', 'Female','Cat',5);
+INSERT INTO Animal VALUES (001,'Pamuk', 'Female','Cat',6);
+
+
+INSERT INTO MedicalRecord VALUES (222,789,TO_DATE ('09/05/2020', 'mm/dd/yyyy'),15,'Elective procedures');
+INSERT INTO MedicalRecord VALUES (555,654,TO_DATE ('02/06/2020', 'mm/dd/yyyy'),100,'Dental surgery');
+INSERT INTO MedicalRecord VALUES (999,123,TO_DATE ('05/15/2019', 'mm/dd/yyyy'),200,'Sterilization surgery');
+INSERT INTO MedicalRecord VALUES (333,222,TO_DATE ('06/24/2018', 'mm/dd/yyyy'),50,'Elective procedures');
+INSERT INTO MedicalRecord VALUES (666,777,TO_DATE ('11/16/2020', 'mm/dd/yyyy'),1000,'Cardiology surgery');
+INSERT INTO MedicalRecord VALUES (888,789,TO_DATE ('01/14/2019', 'mm/dd/yyyy'),75,'Sterilization surgery');
+INSERT INTO MedicalRecord VALUES (111,654,TO_DATE ('12/08/2020', 'mm/dd/yyyy'),100,'Dental surgery');
+INSERT INTO MedicalRecord VALUES (777,666,TO_DATE ('10/14/2015', 'mm/dd/yyyy'),100,'Dental surgery');
+INSERT INTO MedicalRecord VALUES (666,555,TO_DATE ('11/16/2020', 'mm/dd/yyyy'),1000,'Cardiology surgery');
+
+
+INSERT INTO Cage VALUES (266, 'Large');
+INSERT INTO Cage VALUES (366, 'Small');
+INSERT INTO Cage VALUES (466, 'Medium');
+INSERT INTO Cage VALUES (566, 'Large');
+INSERT INTO Cage VALUES (666, 'Medium');
+INSERT INTO Cage VALUES (766, 'Small');
+INSERT INTO Cage VALUES (866, 'Small');
+
+
+INSERT INTO PetFood VALUES (001, 'Royal Canin', TO_DATE ('04/04/2020', 'mm/dd/yyyy'),'puppy');
+INSERT INTO PetFood VALUES (011, 'ND',TO_DATE ('05/02/2023', 'mm/dd/yyyy'),'adult');
+INSERT INTO PetFood VALUES (101, 'Hills', TO_DATE ('07/11/2021', 'mm/dd/yyyy'),'puppy');
+INSERT INTO PetFood VALUES (002, 'Purina', TO_DATE ('08/24/2023', 'mm/dd/yyyy'),'mature');
+INSERT INTO PetFood VALUES (022, 'Whiskas',TO_DATE ('11/08/2021', 'mm/dd/yyyy'),'adult');
+INSERT INTO PetFood VALUES (024, 'Drools', TO_DATE ('01/25/2022', 'mm/dd/yyyy'),'mature');
+
+INSERT INTO Animal_PetFood VALUES (555,001);
+INSERT INTO Animal_PetFood VALUES (222,011);
+INSERT INTO Animal_PetFood VALUES (999,101);
+INSERT INTO Animal_PetFood VALUES (333,002);
+INSERT INTO Animal_PetFood VALUES (666,022);
+INSERT INTO Animal_PetFood VALUES (888,024);
+
+
+INSERT INTO Animal_Cage VALUES (555,266);
+INSERT INTO Animal_Cage VALUES (222,366);
+INSERT INTO Animal_Cage VALUES (999,466);
+INSERT INTO Animal_Cage VALUES (333,566);
+INSERT INTO Animal_Cage VALUES (666,666);
+INSERT INTO Animal_Cage VALUES (777,866);
+INSERT INTO Animal_Cage VALUES (111,666);
+
+
+INSERT INTO Animal_CareTaker VALUES (555,111);
+INSERT INTO Animal_CareTaker VALUES (222,223);
+INSERT INTO Animal_CareTaker VALUES (999,435);
+INSERT INTO Animal_CareTaker VALUES (333,342);
+INSERT INTO Animal_CareTaker VALUES (666,567);
+INSERT INTO Animal_CareTaker VALUES (888,612);
+
+
+--1st Query
+SELECT Animal.*
+FROM Animal
+INNER JOIN Animal_Cage
+ON Animal.an_id = Animal_Cage.an_id
+INNER JOIN Cage
+ON Animal_Cage.cage_id = Cage.cage_id
+WHERE Cage.cage_size = 'Small' AND Animal.species = 'Cat';
+
+--2nd Query
+SELECT Animal.*
+FROM Animal
+INNER JOIN MedicalRecord
+ON Animal.an_id = MedicalRecord.an_id
+WHERE MedicalRecord.op_cost > 75 AND Animal.species='Dog';
+
+--3rd Query
+SELECT Veterinarian.*
+FROM Veterinarian
+INNER JOIN MedicalRecord
+ON Veterinarian.v_id = MedicalRecord.v_id
+WHERE MedicalRecord.op_code = 'Dental surgery';
+
+--4th Query
+SELECT Animal.an_name
+FROM Animal
+INNER JOIN MedicalRecord
+ON Animal.an_id=MedicalRecord.an_id
+WHERE MedicalRecord.op_cost > (SELECT AVG(MedicalRecord.op_cost) AS op_cost FROM MedicalRecord);
+
+--5th Query
+SELECT Animal.an_name
+FROM Animal
+INNER JOIN Animal_CareTaker
+ON Animal.an_id = Animal_CareTaker.an_id
+INNER JOIN CareTaker
+ON Animal_CareTaker.c_id = CareTaker.c_id
+WHERE CareTaker.c_age = (SELECT MIN(CareTaker.c_age) FROM CareTaker);
+
+--6th Query
+SELECT * FROM Animal_Cage;
+UPDATE Animal_Cage
+SET Animal_Cage.cage_id = 766
+WHERE Animal_Cage.an_id = 111;
+SELECT * FROM Animal_Cage;
+
+--7th Query
+SELECT * FROM Animal;
+DELETE FROM Animal
+WHERE Animal.an_id = 001;
+SELECT * FROM Animal;
+
+--8th Query
+SELECT COUNT(MedicalRecord.an_id) FROM MedicalRecord GROUP BY MedicalRecord.an_id;
+
+--9th Query
+SELECT MedicalRecord.op_cost 
+FROM MedicalRecord 
+WHERE MedicalRecord.v_id = 
+(SELECT Veterinarian.v_id 
+FROM Veterinarian 
+WHERE Veterinarian.v_age = 
+(SELECT MIN(Veterinarian.v_age)
+FROM Veterinarian));
+
+ 
